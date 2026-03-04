@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Display Window</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --accent-color: #0a84ff;
+            /* iOS Blue for glow */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient Background Mesh/Liquid effect */
+        .ambient-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            opacity: 0.6;
+            background: radial-gradient(circle at 50% 50%, rgba(10, 132, 255, 0.15) 0%, rgba(0, 0, 0, 0) 60%);
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 1;
+            animation: moveBlob 20s infinite alternate ease-in-out;
+            opacity: 0.5;
+        }
+
+        .blob-1 {
+            width: 60vw;
+            height: 60vw;
+            background: #0a84ff;
+            top: -20vh;
+            left: -10vw;
+            animation-duration: 25s;
+        }
+
+        .blob-2 {
+            width: 50vw;
+            height: 50vw;
+            background: #5e5ce6;
+            bottom: -20vh;
+            right: -10vw;
+            animation-delay: -10s;
+        }
+
+        .blob-3 {
+            width: 40vw;
+            height: 40vw;
+            background: #ff375f;
+            top: 40vh;
+            left: 40vw;
+            animation-duration: 30s;
+            animation-delay: -5s;
+            opacity: 0.3;
+        }
+
+        @keyframes moveBlob {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(5vw, 5vh) scale(1.1);
+            }
+
+            100% {
+                transform: translate(-5vw, -5vh) scale(0.9);
+            }
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1400px;
+            padding: 40px;
+        }
+
+        /* Glass Panel */
+        .token-panel {
+            background: rgba(30, 30, 30, 0.4);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 80px 100px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            animation: showPanel 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            min-width: 80%;
+        }
+
+        @keyframes showPanel {
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff9f0a;
+            /* Orange for waiting */
+            margin-right: 12px;
+            box-shadow: 0 0 10px #ff9f0a;
+            animation: pulse 2s infinite;
+            transition: all 0.3s ease;
+        }
+
+        .token-value {
+            font-size: 12vw;
+            font-weight: 800;
+            letter-spacing: 5px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            word-break: break-word;
+        }
+
+        .room-text {
+            font-size: 2.5vw;
+            font-weight: 600;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Mode Menunggu (Waiting) */
+        body.state-waiting .status-dot {
+            background: #ff9f0a;
+            box-shadow: 0 0 10px #ff9f0a;
+            animation: pulse 2s infinite;
+        }
+
+        body.state-waiting .status-text {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        body.state-waiting .token-value {
+            font-size: 6vw;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            background: linear-gradient(180deg, #d1d1d6 0%, #8e8e93 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Mode Aktif (Active) */
+        body.state-active .status-dot {
+            background: #32d74b;
+            box-shadow: 0 0 15px #32d74b;
+            animation: none;
+        }
+
+        body.state-active .status-text {
+            color: #32d74b;
+        }
+
+        body.state-active .token-panel {
+            background: rgba(40, 40, 40, 0.5);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 60px rgba(50, 215, 75, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+            border: 1px solid rgba(50, 215, 75, 0.2);
+        }
+
+        body.state-active .token-value {
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+            animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            color: white;
+            -webkit-text-fill-color: white;
+            /* Override gradient to make it punchy */
+        }
+
+        /* Mode Kadaluarsa (Expired) */
+        body.state-expired .status-dot {
+            background: #ff453a;
+            box-shadow: 0 0 15px #ff453a;
+            animation: pulse 2s infinite;
+        }
+
+        body.state-expired .status-text {
+            color: #ff453a;
+        }
+
+        body.state-expired .token-panel {
+            border: 1px solid rgba(255, 69, 58, 0.2);
+        }
+
+        body.state-expired .token-value {
+            font-size: 8vw;
+            color: #ff453a;
+            background: none;
+            -webkit-text-fill-color: #ff453a;
+            opacity: 0.8;
+            letter-spacing: 0px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 159, 10, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 159, 10, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 159, 10, 0);
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+                filter: blur(10px);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .token-panel {
+                padding: 40px;
+                border-radius: 30px;
+            }
+
+            .token-value {
+                font-size: 16vw;
+            }
+
+            body.state-waiting .token-value {
+                font-size: 8vw;
+            }
+
+            body.state-expired .token-value {
+                font-size: 10vw;
+            }
+        }
+    </style>
+</head>
+
+<body class="state-waiting">
+    <!-- Ambient liquid background -->
+    <div class="ambient-layer">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <div class="token-panel">
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span class="status-text" id="statusText">Daftar Tunggu</span>
+            </div>
+            <div id="tokensWrapper">
+                <div class="token-block">
+                    <div class="token-value">MENUNGGU TOKEN</div>
+                    <div class="room-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const tokensWrapper = document.getElementById("tokensWrapper");
+        const statusText = document.getElementById("statusText");
+
+        function renderTokens(dataList, state) {
+            // Re-trigger animation by resetting style
+            tokensWrapper.style.animation = 'none';
+            tokensWrapper.offsetHeight; /* trigger reflow */
+            tokensWrapper.style.animation = null;
+
+            document.body.className = `state-${state}`;
+
+            let htmlStr = '';
+            dataList.forEach(item => {
+                let tokenText = item.token || item;
+                let roomText = item.ruangan || '';
+
+                htmlStr += `
+                <div class="token-block" style="margin-bottom: 30px;">
+                    <div class="token-value">${tokenText}</div>
+                    ${roomText ? `<div class="room-text">Ruangan: ${roomText}</div>` : ''}
+                </div>`;
+            });
+
+            // remove trailing margin
+            if (dataList.length > 0) {
+                htmlStr = htmlStr.replace(/margin-bottom: 30px;"(?=[^>]*>$)/, 'margin-bottom: 0;"');
+            }
+
+            tokensWrapper.innerHTML = htmlStr;
+        }
+
+        function updateState(state, text, status, roomName = '') {
+            statusText.innerText = status;
+            renderTokens([{ token: text, ruangan: roomName }], state);
+        }
+
+        socket.on("showToken", (data) => {
+            if (Array.isArray(data)) {
+                statusText.innerText = 'Token Sedang Aktif';
+                renderTokens(data, 'active');
+            } else if (typeof data === 'object' && data !== null) {
+                updateState('active', data.token, 'Token Sedang Aktif', data.ruangan);
+            } else {
+                updateState('active', data, 'Token Sedang Aktif');
+            }
+        });
+
+        socket.on("hideToken", () => {
+            updateState('expired', 'KADALUARSA', 'Waktu Habis');
+        });
+
+        // Handle disconnection smoothly
+        socket.on("disconnect", () => {
+            updateState('waiting', 'OFFLINE', 'Koneksi Terputus');
+        });
+
+        socket.on("connect", () => {
+            // Ketika terkoneksi kembali, jika belum ada token akan tampil ini
+            // Kalau server punya token, dia akan menimpa via "showToken" event
+            const isWaiting = document.body.className === 'state-waiting';
+            const firstToken = tokensWrapper.querySelector('.token-value');
+            if (isWaiting && firstToken && firstToken.innerText.includes('OFFLINE')) {
+                updateState('waiting', 'MENUNGGU TOKEN', 'Daftar Tunggu');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Input Token TKA</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --primary-color: #007aff;
+            /* iOS Blue */
+            --text-color: #1d1d1f;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-gradient: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
+                --glass-bg: rgba(30, 30, 30, 0.6);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --primary-color: #0a84ff;
+                /* iOS Dark Blue */
+                --text-color: #f5f5f7;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient background blobs */
+        .blob {
+            position: absolute;
+            background: var(--primary-color);
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            background: #ff2d55;
+            /* iOS Pink */
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -100px;
+            background: #5856d6;
+            /* iOS Purple */
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(30px, 50px) scale(1.1);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 40px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            font-size: 15px;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            outline: none;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            input {
+                background: rgba(0, 0, 0, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            input:focus {
+                background: rgba(0, 0, 0, 0.3);
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.2);
+            }
+        }
+
+        input::placeholder {
+            color: #8e8e93;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 8px 16px rgba(0, 122, 255, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(0, 122, 255, 0.4);
+            background: #0070ea;
+        }
+
+        button:active {
+            transform: scale(0.96);
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+        }
+
+        .secondary-btn {
+            background: rgba(10, 132, 255, 0.1);
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: none;
+            border: 1px solid rgba(10, 132, 255, 0.3);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(10, 132, 255, 0.2);
+            box-shadow: none;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .form-row {
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ff3b30;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
+            border: none;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.1);
+            background: #ff453a;
+        }
+
+        /* Success Animation styles */
+        .success-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--glass-bg);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 10;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .checkmark {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .success-text {
+            font-weight: 600;
+            color: #34c759;
+            /* iOS Green */
+            font-size: 20px;
+            animation: slideUp 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container">
+        <h2>Input Token TKA</h2>
+        <p>Masukkan token untuk ditampilkan di layar utama</p>
+
+        <div id="formsContainer">
+            <div class="form-row">
+                <div class="input-group">
+                    <input type="text" class="input-token" placeholder="Masukkan Token" autocomplete="off">
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <input type="text" class="input-ruangan" placeholder="Masukkan Nama Ruangan (opsional)"
+                        autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <button onclick="tambahBaris()" id="btnTambah" class="secondary-btn">+ Tambah Token</button>
+        <button onclick="kirim()" id="btnKirim">Tampilkan di Layar</button>
+
+        <div class="success-overlay" id="successOverlay">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle cx="26" cy="26" r="25" fill="none" stroke="#34c759" stroke-width="2" />
+                <path fill="none" stroke="#34c759" stroke-width="4" stroke-linecap="round"
+                    d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+            <div class="success-text">Token Terkirim!</div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const formsContainer = document.getElementById("formsContainer");
+        const btnKirim = document.getElementById("btnKirim");
+        const successOverlay = document.getElementById("successOverlay");
+
+        function setupEnterKey(row) {
+            const tokenInput = row.querySelector('.input-token');
+            const ruanganInput = row.querySelector('.input-ruangan');
+
+            tokenInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    ruanganInput.focus();
+                }
+            });
+
+            ruanganInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    kirim();
+                }
+            });
+        }
+
+        // Setup first row
+        setupEnterKey(formsContainer.querySelector('.form-row'));
+
+        function tambahBaris() {
+            const row = document.createElement("div");
+            row.className = "form-row";
+            row.innerHTML = `
+                <button class="delete-btn" onclick="this.parentElement.remove()">✕</button>
+                <div class="input-group">
+                    <input type="text" class="input-token" placeholder="Masukkan Token" autocomplete="off">
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <input type="text" class="input-ruangan" placeholder="Masukkan Nama Ruangan (opsional)" autocomplete="off">
+                </div>
+            `;
+            formsContainer.appendChild(row);
+            setupEnterKey(row);
+            row.querySelector('.input-token').focus();
+        }
+
+        function kirim() {
+            const rows = document.querySelectorAll(".form-row");
+            let dataList = [];
+            let isValid = false;
+
+            rows.forEach(row => {
+                const tokenInput = row.querySelector(".input-token");
+                const ruanganInput = row.querySelector(".input-ruangan");
+                const token = tokenInput.value.trim();
+                const ruangan = ruanganInput.value.trim();
+
+                if (token) {
+                    isValid = true;
+                    dataList.push({ token, ruangan });
+                } else if (!token && rows.length === 1) {
+                    tokenInput.focus();
+                    // Add a little shake animation for empty input
+                    tokenInput.style.transform = "translateX(-10px)";
+                    setTimeout(() => tokenInput.style.transform = "translateX(10px)", 50);
+                    setTimeout(() => tokenInput.style.transform = "translateX(-10px)", 100);
+                    setTimeout(() => tokenInput.style.transform = "translateX(10px)", 150);
+                    setTimeout(() => tokenInput.style.transform = "translateX(0)", 200);
+                }
+            });
+
+            if (!isValid) return;
+
+            // Add loading state to button
+            const originalText = btnKirim.innerText;
+            btnKirim.innerText = "Mengirim...";
+            btnKirim.style.opacity = "0.8";
+
+            // Emit token data (can be array or single object, display handles it)
+            socket.emit("newToken", dataList);
+
+            // Show success animation overlay
+            setTimeout(() => {
+                successOverlay.classList.add('active');
+
+                rows.forEach(row => {
+                    row.querySelector('.input-token').value = '';
+                });
+
+                btnKirim.innerText = originalText;
+                btnKirim.style.opacity = "1";
+
+                // Hide success overlay after 2 seconds
+                setTimeout(() => {
+                    successOverlay.classList.remove('active');
+                    if (rows.length > 0) {
+                        rows[0].querySelector('.input-token').focus();
+                    }
+                }, 2000);
+            }, 300);
+        }
+    </script>
+</body>
+
+</html>
