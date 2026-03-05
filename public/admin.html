@@ -37,16 +37,35 @@
             background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             color: var(--text-color);
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             position: relative;
+            padding: 50px 20px 120px 20px;
+        }
+
+        .header-title {
+            text-align: center;
+            z-index: 1;
+            margin-bottom: 30px;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .cards-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            z-index: 1;
         }
 
         /* Ambient background blobs */
         .blob {
-            position: absolute;
+            position: fixed;
             background: var(--primary-color);
             border-radius: 50%;
             filter: blur(80px);
@@ -86,18 +105,18 @@
 
         .container {
             position: relative;
-            z-index: 1;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 30px;
-            padding: 40px;
-            width: 90%;
-            max-width: 420px;
+            padding: 30px;
+            width: 100%;
+            max-width: 350px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+            flex-shrink: 0;
         }
 
         @keyframes slideUp {
@@ -199,10 +218,36 @@
             box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
         }
 
+        .action-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 20;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 500px;
+            animation: slideUp 0.6s ease-out both;
+        }
+
+        .action-bar button {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            margin: 0;
+        }
+
         .secondary-btn {
             background: rgba(10, 132, 255, 0.1);
             color: var(--primary-color);
-            margin-bottom: 20px;
             box-shadow: none;
             border: 1px solid rgba(10, 132, 255, 0.3);
         }
@@ -214,26 +259,16 @@
             transform: translateY(-2px);
         }
 
-        .form-row {
-            position: relative;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            animation: slideUp 0.3s ease-out;
-        }
-
         .delete-btn {
             position: absolute;
-            top: -10px;
-            right: -10px;
-            width: 30px;
-            height: 30px;
+            top: -15px;
+            right: -15px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background: #ff3b30;
             color: white;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -252,13 +287,12 @@
 
         /* Success Animation styles */
         .success-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
             background: var(--glass-bg);
-            border-radius: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -268,7 +302,7 @@
             transition: opacity 0.4s ease;
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            z-index: 10;
+            z-index: 100;
         }
 
         .success-overlay.active {
@@ -291,6 +325,62 @@
             font-size: 20px;
             animation: slideUp 0.3s ease;
         }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            p {
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+
+            input {
+                padding: 14px 18px;
+                font-size: 16px;
+                border-radius: 15px;
+            }
+
+            button {
+                padding: 15px;
+                font-size: 16px;
+                border-radius: 15px;
+            }
+
+            .action-bar {
+                bottom: 20px;
+                padding: 10px 15px;
+                flex-direction: column;
+                border-radius: 20px;
+            }
+
+            .action-bar button {
+                padding: 12px;
+            }
+
+            .blob-1 {
+                width: 250px;
+                height: 250px;
+            }
+
+            .blob-2 {
+                width: 300px;
+                height: 300px;
+            }
+
+            .delete-btn {
+                top: -10px;
+                right: -10px;
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 
@@ -298,32 +388,35 @@
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 
-    <div class="container">
+    <div class="header-title">
         <h2>Input Token TKA</h2>
         <p>Masukkan token untuk ditampilkan di layar utama</p>
+    </div>
 
-        <div id="formsContainer">
-            <div class="form-row">
-                <div class="input-group">
-                    <input type="text" class="input-token" placeholder="Masukkan Token" autocomplete="off">
-                </div>
-                <div class="input-group" style="margin-bottom: 0;">
-                    <input type="text" class="input-ruangan" placeholder="Masukkan Nama Ruangan (opsional)"
-                        autocomplete="off">
-                </div>
+    <div class="cards-wrapper" id="formsContainer">
+        <div class="container form-card">
+            <div class="input-group">
+                <input type="text" class="input-token" placeholder="Masukkan Token" autocomplete="off">
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <input type="text" class="input-ruangan" placeholder="Masukkan Nama Ruangan (opsional)"
+                    autocomplete="off">
             </div>
         </div>
-        <button onclick="tambahBaris()" id="btnTambah" class="secondary-btn">+ Tambah Token</button>
-        <button onclick="kirim()" id="btnKirim">Tampilkan di Layar</button>
+    </div>
 
-        <div class="success-overlay" id="successOverlay">
-            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                <circle cx="26" cy="26" r="25" fill="none" stroke="#34c759" stroke-width="2" />
-                <path fill="none" stroke="#34c759" stroke-width="4" stroke-linecap="round"
-                    d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-            </svg>
-            <div class="success-text">Token Terkirim!</div>
-        </div>
+    <div class="action-bar">
+        <button onclick="tambahBaris()" id="btnTambah" class="secondary-btn">+ Tambah Container Baru</button>
+        <button onclick="kirim()" id="btnKirim">Tampilkan Semua</button>
+    </div>
+
+    <div class="success-overlay" id="successOverlay">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="none" stroke="#34c759" stroke-width="2" />
+            <path fill="none" stroke="#34c759" stroke-width="4" stroke-linecap="round"
+                d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
+        <div class="success-text">Token Terkirim!</div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -351,11 +444,11 @@
         }
 
         // Setup first row
-        setupEnterKey(formsContainer.querySelector('.form-row'));
+        setupEnterKey(formsContainer.querySelector('.form-card'));
 
         function tambahBaris() {
             const row = document.createElement("div");
-            row.className = "form-row";
+            row.className = "container form-card";
             row.innerHTML = `
                 <button class="delete-btn" onclick="this.parentElement.remove()">✕</button>
                 <div class="input-group">
@@ -367,11 +460,14 @@
             `;
             formsContainer.appendChild(row);
             setupEnterKey(row);
-            row.querySelector('.input-token').focus();
+            setTimeout(() => {
+                row.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                row.querySelector('.input-token').focus();
+            }, 50);
         }
 
         function kirim() {
-            const rows = document.querySelectorAll(".form-row");
+            const rows = document.querySelectorAll(".form-card");
             let dataList = [];
             let isValid = false;
 
